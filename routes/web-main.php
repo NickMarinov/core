@@ -103,7 +103,7 @@ Route::group(['prefix' => 'events/', 'middleware' => ['auth_full_group']], funct
     Route::get('store', 'Events\EventController@store')->name('events.store');
     Route::get('edit', 'Events\EventController@edit')->name('events.edit');
     Route::get('roster', 'Events\EventController@showRoster')->name('events.roster');
-    Route::get('ATC/interest', 'Events\EventController@addATCInterest')->name('events.atc.interest');
+    Route::get('atc/interest', 'Events\EventController@addATCInterest')->name('events.atc.interest');
 });
 
 
