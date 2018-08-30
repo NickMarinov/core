@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Adm\VisitTransfer;
+namespace App\Http\Controllers\VisitTransfer\Admin;
 
 use App\Models\Mship\Account as Accounts;
 use Carbon\Carbon;

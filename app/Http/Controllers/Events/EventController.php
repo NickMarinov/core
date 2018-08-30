@@ -2,27 +2,14 @@
 
 namespace App\Http\Controllers\Events;
 
-use App\Models\Events\Events;
+use App\Events;
 use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
 
 class EventController extends BaseController
 {
-
-    public function create()
-    {
-        return view('events.create');
-    }
-
-    public function store(Request $request)
-    {
-        Events::create($request->all());
-        return redirect()->route('events.calendar');
-    }
-
     public function showCalendar() {
-        $events = Events::all();
-        return view('events.calendar', compact('events'));
+        return view('events.calendar');
     }
 
     public function showRoster() {

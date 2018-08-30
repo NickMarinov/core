@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Adm\VisitTransfer;
+namespace App\Http\Controllers\VisitTransfer\Admin;
 
 use App\Http\Controllers\Adm\AdmController;
 use App\Http\Requests\VisitTransfer\ReferenceAcceptRequest;

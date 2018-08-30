@@ -87,11 +87,6 @@ class Pilot extends Model
         'cruise_tas',
         'route',
         'remarks',
-        'current_latitude',
-        'current_longitude',
-        'current_altitude',
-        'current_groundspeed',
-        'current_heading',
     ];
 
     public static function scopeOnline($query)
@@ -117,14 +112,6 @@ class Pilot extends Model
         });
     }
 
-    public static function scopeWithinAirport($query, $icao)
-    {
-        return $query->where(function ($subQuery) use ($icao) {
-            return $subQuery->where('departure_airport', $icao)
-                ->orWhere('arrival_airport', $icao);
-        });
-    }
-
     public function account()
     {
         return $this->belongsTo(\App\Models\Mship\Account::class, 'account_id', 'id');
@@ -147,7 +134,7 @@ class Pilot extends Model
         }
 
         $location = $airport->containsCoordinates($this->current_latitude, $this->current_longitude);
-        $altitude = $this->current_altitude < $airport->elevation + 500;
+        $altitude = $this->current_altitude < $airport->altitude + 500;
 
         return $location && $altitude;
     }
