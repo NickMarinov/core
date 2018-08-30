@@ -15,19 +15,19 @@ class SmartcarsController extends BaseController
         $exercises = Flight::featured()->enabled()->orderBy('created_at')->get();
         $pireps = Pirep::query()->belongsTo($this->account->id)->count();
 
-        return $this->viewMake('fte.dashboard')
+        return view('fte.dashboard')
             ->with('exercises', $exercises)
             ->with('pireps', $pireps);
     }
 
     public function getMap()
     {
-        return $this->viewMake('fte.map');
+        return view('fte.map');
     }
 
     public function getGuide()
     {
-        return $this->viewMake('fte.guide');
+        return view('fte.guide');
     }
 
     public function getExercise(Flight $exercise = null)
@@ -35,13 +35,13 @@ class SmartcarsController extends BaseController
         if (is_null($exercise)) {
             $exercises = Flight::enabled()->orderBy('created_at')->get();
 
-            return $this->viewMake('fte.exercises')->with('exercises', $exercises);
+            return view('fte.exercises')->with('exercises', $exercises);
         } else {
             $this->authorize('bid', $exercise);
 
             $bid = Bid::accountId($this->account->id)->flightId($exercise->id)->pending()->first();
 
-            return $this->viewMake('fte.exercise')
+            return view('fte.exercise')
                 ->with('flight', $exercise)
                 ->with('criteria', $exercise->criteria->sortBy('order'))
                 ->with('booking', $bid);
@@ -85,11 +85,11 @@ class SmartcarsController extends BaseController
         if (is_null($pirep)) {
             $pireps = Pirep::query()->belongsTo($request->user()->id)->orderByDesc('created_at')->get();
 
-            return $this->viewMake('fte.history')->with('pireps', $pireps);
+            return view('fte.history')->with('pireps', $pireps);
         } else {
             $this->authorize('view', $pirep);
 
-            return $this->viewMake('fte.completed-flight')
+            return view('fte.completed-flight')
                 ->with('pirep', $pirep)
                 ->with('bid', $pirep->bid)
                 ->with('flight', $pirep->bid->flight)
