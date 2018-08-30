@@ -104,11 +104,7 @@
                                 </tr>
                             </table>
 
-                            @if($application->referees()->withTrashed()->whereNotNull('deleted_at')->first()  && $application->referees->count() > 0)
-                                <p class="text-center"><strong><i>Application has system deleted references in addition to the below:</i></strong></p>
-                            @endif
-
-                            @forelse($application->referees as $count=>$reference)
+                            @forelse($application->referees()->withTrashed()->get() as $count=>$reference)
                                 <br/>
                                 <h4>
                                     Reference {{ $count+1 }} - {{ $reference->account->name }}

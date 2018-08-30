@@ -18,5 +18,4 @@ sites:
       to: /home/vagrant/vukcore/public
 
 databases:
-    - core
-    - core_testing
+    - vukcore
