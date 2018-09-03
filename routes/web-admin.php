@@ -99,6 +99,9 @@ Route::group(['prefix' => 'adm', 'namespace' => 'Adm', 'middleware' => ['auth_fu
     Route::get('ops/qstats', ['as' => 'adm.ops.qstats.index', 'uses' => 'Operations\QuarterlyStats@get']);
     Route::post('ops/qstats', ['as' => 'adm.ops.qstats.generate', 'uses' => 'Operations\QuarterlyStats@generate']);
 
+    Route::get('events/create', ['as' => 'adm.events.create', 'uses' => 'Events\EventController@create']);
+    Route::get('events/roster', ['as' => 'adm.events.roster', 'uses' => 'Events\EventController@roster']);
+
     Route::group(['prefix' => 'smartcars', 'namespace' => 'Smartcars', 'as' => 'adm.smartcars.'], function () {
         Route::resource('configure/aircraft', 'Resources\AircraftController')->except('show');
         Route::resource('configure/airports', 'Resources\AirportController')->except('show');

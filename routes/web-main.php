@@ -97,7 +97,7 @@ Route::group(['as' => 'community.membership.', 'namespace' => 'Community', 'midd
 });
 
 // Events
-Route::group(['prefix' => 'events/', 'middleware' => ['auth_full_group']], function () {
+Route::group(['prefix' => 'events', 'middleware' => ['auth_full_group']], function () {
     Route::get('calendar', 'Events\EventController@showCalendar')->name('events.calendar');
     Route::get('create', 'Events\EventController@create')->name('events.create');
     Route::get('store', 'Events\EventController@store')->name('events.store');
