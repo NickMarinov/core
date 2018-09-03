@@ -8,7 +8,6 @@ use App\Http\Controllers\BaseController;
 
 class EventController extends BaseController
 {
-
     public function showCalendar()
     {
         $events = Events::all();
