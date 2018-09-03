@@ -10,8 +10,17 @@
                     <a href = "{{ URL::route("adm.events.create") }}" >
                         <i class="fa fa-edit"></i>
                         <span>Create Event</span>
-                    </a >
+                    </a>
                 </li>
+            @endif
+            
+            @if($_account->hasPermission("adm/events/roster"))
+                    <li {{ (Request::is('adm/events/roster*')) ? 'class="active"' : ''}}>
+                        <a href = "{{ URL::route("adm.events.roster") }}" >
+                            <i class="fa fa-table"></i>
+                            <span>Roster</span>
+                        </a >
+                    </li>
                 @endif
         </ul>
 
