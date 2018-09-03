@@ -21,6 +21,8 @@
 
         @include('adm.layout.sidebar.atc')
 
+        @include('adm.layout.sidebar.events')
+
         @include('adm.layout.sidebar.smartCARS')
 
         @include('adm.layout.sidebar.networkData')
