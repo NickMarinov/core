@@ -8,11 +8,11 @@ use App\Http\Controllers\BaseController;
 
 class EventController extends BaseController
 {
-    public function showCalendar()
+    public function showBookedEvents()
     {
         $events = Events::all();
 
-        return view('events.calendar', compact('events'));
+        return view('events.booked', compact('events'));
     }
 
     public function showRoster()
