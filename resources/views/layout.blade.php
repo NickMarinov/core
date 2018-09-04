@@ -23,6 +23,8 @@
     </script>
 
     <!-- CSS -->
+    {{ HTML::style('design/vendors/iconfonts/mdi/css/materialdesignicons.min.css') }}
+    {{ HTML::style('design/vendors/css/vendor.bundle.base.css') }}
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Yellowtail">
     <link media="all" type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Josefin+Slab:600">
     <link media="all" type="text/css" rel="stylesheet" href="{{ mix('css/app-all.css') }}">
@@ -110,7 +112,25 @@
                         </li>
                     </ul>
 
-                    @if(Auth::guard('vatsim-sso')->check() && Auth::user()->qualificationAtc && Auth::user()->qualificationAtc->isS1)
+                    <ul class="nav navbar-nav navcustom">
+                        <li class="dropdown dropdown-large">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Events <b class="caret"></b></a>
+                            <ul class="dropdown-menu dropdown-menu-large row mainmenu_dropdown">
+                                <li class="col-sm-12">
+                                    <ul>
+                                        <li class="dropdown-header">Upcoming Events</li>
+                                        <li>{!! link_to_route("events.booked", "Booked Events") !!}</li>
+                                        <li class="divider"></li>
+                                        <li class="dropdown-header">Show Interest & Rosters</li>
+                                        <li>{!! link_to_route("events.roster", "Available Rosters") !!}</li>
+                                        <li>{!! link_to_route("events.atc.interest", "Show ATC Interest") !!}</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    @if(Auth::guard('vatsim-sso')->check() && Auth::user()->qualificationAtc->isS1)
                         <ul class="nav navbar-nav navcustom">
                             <li class="dropdown dropdown-large">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Controllers <b class="caret"></b></a>
