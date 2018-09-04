@@ -96,9 +96,10 @@ Route::group(['as' => 'community.membership.', 'namespace' => 'Community', 'midd
     ])->where('default', '[default|true]');
 });
 
+
 // Events
-Route::group(['prefix' => 'events', 'middleware' => ['auth_full_group']], function () {
-    Route::get('calendar', 'Events\EventController@showCalendar')->name('events.calendar');
+Route::group(['prefix' => 'events/', 'middleware' => ['auth_full_group']], function () {
+    Route::get('booked', 'Events\EventController@showBookedEvents')->name('events.booked');
     Route::get('create', 'Events\EventController@create')->name('events.create');
     Route::get('store', 'Events\EventController@store')->name('events.store');
     Route::get('edit', 'Events\EventController@edit')->name('events.edit');
