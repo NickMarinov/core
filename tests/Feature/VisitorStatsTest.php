@@ -5,12 +5,12 @@ namespace Tests\Feature;
 use App\Models\Mship\Account;
 use App\Models\Mship\Role;
 use App\Models\Mship\State;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class VisitorStatsTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $account;
 
@@ -28,7 +28,7 @@ class VisitorStatsTest extends TestCase
     /** @test * */
     public function testNoHoursArePulledOnGet()
     {
-        $this->actingAs($this->account)->get(route('visiting.admin.hours.create'))
+        $this->actingAs($this->account)->get(route('adm.visiting.hours.create'))
             ->assertViewIs('visit-transfer.admin.hours.index')
             ->assertViewMissing('accounts');
     }
@@ -36,7 +36,7 @@ class VisitorStatsTest extends TestCase
     /** @test * */
     public function testOnlyVisitingControllersAreSelected()
     {
-        $this->actingAs($this->account)->get(route('visiting.admin.hours.search'))
+        $this->actingAs($this->account)->get(route('adm.visiting.hours.search'))
             ->assertViewIs('visit-transfer.admin.hours.list')
             ->assertViewHas(['accounts', 'startDate', 'endDate']);
     }
