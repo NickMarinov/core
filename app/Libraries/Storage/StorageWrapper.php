@@ -38,6 +38,6 @@ abstract class StorageWrapper
      */
     protected function parseFileName($fileName)
     {
-        return $this->basePath. "/" . $fileName;
+        return $this->basePath.'/'.$fileName;
     }
 }

@@ -37,7 +37,7 @@ class Token extends BaseController
         }
 
         $latestId = $this->ukcp->getValidTokensFor(auth()->user())->first()->id;
-        $tokenPath = 'ukcp/tokens/' . auth()->user()->id . '/' . $latestId . '.json';
+        $tokenPath = 'ukcp/tokens/'.auth()->user()->id.'/'.$latestId.'.json';
         Storage::disk('local')->put($tokenPath, $newToken);
 
         return $this->viewMake('ukcp.token.create')->with('newToken', $latestId);
@@ -69,13 +69,13 @@ class Token extends BaseController
 
     public function download($tokenId)
     {
-        $tokenPath = storage_path('app/ukcp/tokens/') . auth()->user()->id . '/' . $tokenId . '.json';
-        $headers = array(
+        $tokenPath = storage_path('app/ukcp/tokens/').auth()->user()->id.'/'.$tokenId.'.json';
+        $headers = [
             'Content-Type: application/json',
-        );
+        ];
 
         try {
-            return response()->download($tokenPath, substr($tokenId, -8) . '.json', $headers);
+            return response()->download($tokenPath, substr($tokenId, -8).'.json', $headers);
         } catch (FileNotFoundException $e) {
             return redirect()->back()->with('error', 'There was an issue downloading your file. Please contact Web Services.');
         }

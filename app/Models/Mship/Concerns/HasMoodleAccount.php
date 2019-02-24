@@ -121,7 +121,7 @@ trait HasMoodleAccount
             || $this->hasState('VISITING')
             || $this->hasState('TRANSFERRING');
     }
-    
+
     private function moodleEnabled()
     {
         return config('services.moodle.database') && DB::table('oauth_clients')->where('name', 'Moodle')->first();

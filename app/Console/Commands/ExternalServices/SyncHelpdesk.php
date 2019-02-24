@@ -4,7 +4,6 @@ namespace App\Console\Commands\ExternalServices;
 
 use App\Console\Commands\Command;
 use App\Models\Mship\Account;
-use DB;
 
 /**
  * Syncs all Core accounts to Helpdesk.

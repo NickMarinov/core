@@ -98,7 +98,7 @@ class ManageSlack extends Command
                 }
             } catch (ClientException $e) {
                 if ($e->getCode() === 429) {
-                    $retryAfter = (int)$e->getResponse()->getHeader('Retry-After')[0];
+                    $retryAfter = (int) $e->getResponse()->getHeader('Retry-After')[0];
                     sleep(++$retryAfter);
                     goto start;
                 }
@@ -131,8 +131,8 @@ class ManageSlack extends Command
     private function messageAskingForRealName($localUser, $slackUser)
     {
         $message =
-            "Your current name does not match your VATSIM profile.\n" .
-            "Please set your Slack name to '{$localUser->name}'.\n" .
+            "Your current name does not match your VATSIM profile.\n".
+            "Please set your Slack name to '{$localUser->name}'.\n".
             "You can change your profile settings by clicking the 'Profile & Account' menu option.\n";
         $attachment = Slack::generateAttachmentForMessage($message, [], [], null, 'danger');
 
@@ -141,22 +141,22 @@ class ManageSlack extends Command
 
     private function messageDsgAdvisingOfBannedUser($localUser, $slackUser)
     {
-        $attachment = Slack::generateAttachmentForMessage("A banned user is using slack", ['Name' => $localUser->real_name, 'CID' => $localUser->id , 'Slack Details' => $slackUser->real_name. ' ('.$slackUser->id.')'], [], null, 'danger');
+        $attachment = Slack::generateAttachmentForMessage('A banned user is using slack', ['Name' => $localUser->real_name, 'CID' => $localUser->id, 'Slack Details' => $slackUser->real_name.' ('.$slackUser->id.')'], [], null, 'danger');
 
-        Slack::sendToWebServices("<!here>", $attachment);
+        Slack::sendToWebServices('<!here>', $attachment);
     }
 
     private function messageUserAdvisingOfRegistration($slackUser)
     {
         $message =
-            "Your VATSIM UK and Slack accounts are not currently linked.\n" .
-            "To link your accounts, please visit " . route("mship.manage.dashboard") . " and click the registration link for Slack.\n" .
+            "Your VATSIM UK and Slack accounts are not currently linked.\n".
+            'To link your accounts, please visit '.route('mship.manage.dashboard')." and click the registration link for Slack.\n".
             "If you have problems with this, please get in touch: https://helpdesk.vatsim.uk\n";
         $attachment = Slack::generateAttachmentForMessage($message, [], [[
-            "type" => "button",
-            "text" => "Link Account",
-            "url" => route("mship.manage.dashboard"),
-            "style" => "primary"
+            'type' => 'button',
+            'text' => 'Link Account',
+            'url' => route('mship.manage.dashboard'),
+            'style' => 'primary',
         ]], null, 'danger');
         $this->sendMessageToUser($attachment, $slackUser);
     }
@@ -164,9 +164,9 @@ class ManageSlack extends Command
     private function messageUserAdvisingOfAutomaticRegistration($slackUser)
     {
         $message =
-            "Hi " . $slackUser->real_name . ",\n" .
-            "We have found an account matching your email on VATSIM UK Core.\n" .
-            "As such, we have automatically linked this slack account to core for you\n" .
+            'Hi '.$slackUser->real_name.",\n".
+            "We have found an account matching your email on VATSIM UK Core.\n".
+            "As such, we have automatically linked this slack account to core for you\n".
             "Please let us know via the helpdesk if this has occurred erroneously\n";
         $attachment = Slack::generateAttachmentForMessage($message, [], [], null, 'good');
 
@@ -175,6 +175,6 @@ class ManageSlack extends Command
 
     private function sendMessageToUser($attachment, $slackUser)
     {
-        Slack::send($slackUser->id, "", $attachment);
+        Slack::send($slackUser->id, '', $attachment);
     }
 }

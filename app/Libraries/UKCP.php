@@ -8,7 +8,6 @@ use GuzzleHttp\Exception\ClientException;
 
 class UKCP
 {
-
     /** @var string */
     private $apiKey;
 
@@ -24,8 +23,8 @@ class UKCP
     {
         try {
             $client = new Client;
-            $result = $client->post(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+            $result = $client->post(config('services.ukcp.url').'/user/'.$account->id, ['headers' => [
+                'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
             return null;
@@ -61,8 +60,8 @@ class UKCP
         }
 
         try {
-            $response = (new Client)->post(config('services.ukcp.url') . '/user/' . $account->id . '/token', ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+            $response = (new Client)->post(config('services.ukcp.url').'/user/'.$account->id.'/token', ['headers' => [
+                'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
             $result = $response->getBody()->getContents();
         } catch (ClientException $e) {
@@ -79,8 +78,8 @@ class UKCP
     public function deleteToken(string $tokenId)
     {
         try {
-            (new Client)->delete(config('services.ukcp.url') . '/token/' . $tokenId, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+            (new Client)->delete(config('services.ukcp.url').'/token/'.$tokenId, ['headers' => [
+                'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
             return false;
@@ -93,8 +92,8 @@ class UKCP
     {
         try {
             $client = new Client;
-            $result = $client->get(config('services.ukcp.url') . '/user/' . $account->id, ['headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey
+            $result = $client->get(config('services.ukcp.url').'/user/'.$account->id, ['headers' => [
+                'Authorization' => 'Bearer '.$this->apiKey,
             ]]);
         } catch (ClientException $e) {
             return null;

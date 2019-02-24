@@ -34,7 +34,7 @@ class TeamSpeak
 
     public static function enabled()
     {
-        return env('TS_HOST') && env('TS_USER')  && env('TS_PASS') && env('TS_PORT') && env('TS_QUERY_PORT');
+        return env('TS_HOST') && env('TS_USER') && env('TS_PASS') && env('TS_PORT') && env('TS_QUERY_PORT');
     }
 
     /**

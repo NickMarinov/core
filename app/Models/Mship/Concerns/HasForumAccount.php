@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\DB;
 
             $ipsAccount = \IPS\Db::i()->select(
                 'member_id, field_12',
-                'core_pfields_content', [ 'field_12=?', $this->id ]);
+                'core_pfields_content', ['field_12=?', $this->id]);
 
             if (count($ipsAccount) == 0) {
                 // No user. Abort;

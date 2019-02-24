@@ -92,7 +92,6 @@ class ExerciseController extends Controller
         $exercise->fill(array_filter($request->except('image')));
         $exercise->featured = $request->input('featured') ? true : false;
         $exercise->enabled = $request->input('enabled') ? true : false;
-        
 
         if ($request->hasFile('image')) {
             $file = new CoreUploadedFile($request->file('image'));
