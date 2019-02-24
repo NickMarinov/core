@@ -27,6 +27,7 @@ use App\Models\NetworkData\Atc;
 use App\Notifications\Mship\SlackInvitation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Malahierba\PublicId\PublicId;
 
 /**
@@ -305,14 +306,14 @@ class Application extends Model
         }
 
         if ($this->is_pilot) {
-            return Facility::pilot()->public()->get();
+            return Facility::pilot()->isOpen()->public()->get();
         }
 
         if ($this->is_visit) {
-            return Facility::atc()->public()->canVisit()->get();
+            return Facility::atc()->isOpen()->public()->canVisit()->get();
         }
 
-        return Facility::atc()->public()->canTransfer()->get();
+        return Facility::atc()->isOpen()->public()->canTransfer()->get();
     }
 
     public function getIsOpenAttribute()
@@ -777,6 +778,42 @@ class Application extends Model
         $timeOnline = $this->account->networkDataAtc()->forQualificationId($qualificationId)->offline()->sum('minutes_online');
 
         return $timeOnline >= (50 * 60);
+    }
+
+    /** Statistics */
+    public static function statisticTotal()
+    {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_TOTAL', 1, function () {
+            return self::count();
+        });
+    }
+
+    public static function statisticOpenNotInProgress()
+    {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_OPEN_NOT_IN_PROGRESS', 1, function () {
+            return self::statusIn(self::$APPLICATION_IS_CONSIDERED_OPEN)->where('status', '!=', self::STATUS_IN_PROGRESS)->count();
+        });
+    }
+
+    public static function statisticUnderReview()
+    {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_UNDER_REVIEW', 1, function () {
+            return self::underReview()->count();
+        });
+    }
+
+    public static function statisticAccepted()
+    {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_ACCEPTED', 1, function () {
+            return self::status(self::STATUS_ACCEPTED)->count();
+        });
+    }
+
+    public static function statisticClosed()
+    {
+        return Cache::remember('VT_APPLICATIONS_STATISTICS_CLOSED', 1, function () {
+            return self::closed()->count();
+        });
     }
 
     /** Guards */

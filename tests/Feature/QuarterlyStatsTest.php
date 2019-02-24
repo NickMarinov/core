@@ -2,28 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\Models\Mship\Account;
-use App\Models\Mship\Role;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class QuarterlyStatsTest extends TestCase
 {
-    use RefreshDatabase;
-
-    private $admin;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->admin = factory(Account::class)->create();
-        $this->admin->roles()->attach(Role::find(1));
-    }
+    use DatabaseTransactions;
 
     public function testItLoadsQStats()
     {
-        $this->actingAs($this->admin, 'web')->get(route('adm.ops.qstats.index'))->assertSuccessful();
+        $this->actingAs($this->privacc)
+                ->get(route('adm.ops.qstats.index'))
+                ->assertSuccessful();
     }
 
     public function testItGeneratesQStats()
@@ -33,6 +23,8 @@ class QuarterlyStatsTest extends TestCase
             'year' => '2016',
         ];
 
-        $this->actingAs($this->admin, 'web')->post(route('adm.ops.qstats.generate', $stats))->assertSuccessful();
+        $this->actingAs($this->privacc)
+                ->post(route('adm.ops.qstats.generate', $stats))
+                ->assertSuccessful();
     }
 }

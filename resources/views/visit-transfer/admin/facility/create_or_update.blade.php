@@ -22,6 +22,10 @@
                                 {!! Form::label('name', 'Name:'),
                                 Form::text('name', Input::old("name", $facility->name), ['class' => 'form-control']) !!}
                             </div>
+                            <div class="form-group">
+                                {!! Form::label('open', 'Open for applications?'),
+                                Form::select("open", ["1" => "YES", "0" => "NO"], Input::old("open", $facility->open), ['class' => 'form-control']) !!}
+                            </div>
                             <div class="form-group" style="margin-bottom: 25px;">
                                 {!! Form::label('description', 'Description:'),
                                 Form::textarea('description', Input::old("description", $facility->description), ["rows" => 9, "class" => "form-control"]) !!}
@@ -83,7 +87,7 @@
 
                             <div class="form-group">
                                 {!! Form::label('training_spaces', 'How many training places are available?'),
-                                Form::select("training_spaces", array_merge([0,1,2,3,4,5,6,7,8,9,10], ["null" => "Infinite"]), Input::old("training_spaces", ($facility->training_spaces === null ? "null" : $facility->training_spaces)), ['class' => 'form-control']) !!}
+                                Form::select("training_spaces", [null => "Infinite", 0,1,2,3,4,5,6,7,8,9,10], Input::old("training_spaces", ($facility->training_spaces === null ? "null" : $facility->training_spaces)), ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group">

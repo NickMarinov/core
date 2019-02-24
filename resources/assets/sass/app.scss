@@ -1,6 +1,7 @@
 $font-family: Calibri, Tahoma, Geneva, sans-serif;
 $screen-sm: 802px;
 
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Dosis:200,400,500,600);
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/theme";
 @import "node_modules/bootstrap-tour/build/css/bootstrap-tour.min";
@@ -77,6 +78,10 @@ body, html {
 
 .table.table-borders >tbody > tr > td {
   border: 1px solid grey;
+}
+
+.border-black-thin {
+  border: 2px solid black !important;
 }
 
 .breadcrumb_outer_container {

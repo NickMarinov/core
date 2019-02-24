@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class SiteDivisionMemberTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $account;
 
@@ -43,7 +43,7 @@ class SiteDivisionMemberTest extends TestCase
         factory(\App\Models\VisitTransfer\Facility::class, 'atc_transfer')->create();
 
         $response = $this->get(route('visiting.landing'));
-        $response->assertSeeText('You are not able to apply to transfer at this time.');
+        $response->assertSeeText(trans('application.dashboard.apply.atc.transfer.unable'));
     }
 
     public function testItDoesntDisplayReferencesTableIfNotAReferee()

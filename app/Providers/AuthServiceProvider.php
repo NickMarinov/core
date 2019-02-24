@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Community;
-use App\Models\Mship\Account;
 use App\Models\Smartcars;
 use App\Models\VisitTransfer;
+use App\Policies\GroupPolicy;
 use App\Policies\MembershipPolicy;
 use App\Policies\PasswordPolicy;
 use App\Policies\Smartcars\ExercisePolicy;
@@ -15,6 +15,7 @@ use App\Policies\VisitTransfer\ReferencePolicy;
 use Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'password' => PasswordPolicy::class,
         Community\Membership::class => MembershipPolicy::class,
+        Community\Group::class => GroupPolicy::class,
         Smartcars\Flight::class => ExercisePolicy::class,
         Smartcars\Pirep::class => PirepPolicy::class,
         VisitTransfer\Application::class => ApplicationPolicy::class,
@@ -50,7 +52,15 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('use-permission', function ($user, $permission) {
-            return $user->hasPermission($permission);
+            if ($user->hasRole('privacc') && config()->get('app.env') != 'production') {
+                return true;
+            }
+
+            try {
+                return auth()->user()->hasPermissionTo($permission);
+            } catch (PermissionDoesNotExist $e) {
+                return false;
+            }
         });
 
         $this->serviceAccessGates();
@@ -61,11 +71,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected function serviceAccessGates()
     {
-        Gate::define('register-slack', function (Account $user) {
-            $correctState = $user->hasState('division') || $user->hasState('visiting') || $user->hasState('transferring');
-            $isRegistered = !is_null($user->slack_id);
-
-            return $correctState && !$isRegistered;
-        });
+        //
     }
 }

@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // third-party
         \Bugsnag\BugsnagLaravel\Commands\DeployCommand::class,
+        \App\Console\Commands\Deployment\HerokuPostDeploy::class,
     ];
 
     /**
@@ -25,7 +26,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+        $schedule->command('telescope:prune')->daily();
     }
 
     /**

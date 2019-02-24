@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use Bugsnag;
 use Config;
 use HTML;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use URL;
 use Validator;
@@ -20,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
+
         if ($this->app->runningInConsole()) {
             URL::forceRootUrl(env('APP_PROTOCOL', 'https').'://'.Config::get('app.url'));
         }
@@ -77,11 +80,6 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('password', function ($attribute, $value, $parameters, $validator) {
             return \Auth::user()->verifyPassword($value);
         });
-
-        View::composer(
-            ['visit-transfer.admin._sidebar'],
-            \App\Http\ViewComposers\StatisticsComposer::class
-        );
     }
 
     /**
@@ -93,6 +91,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->alias('bugsnag.multi', \Illuminate\Contracts\Logging\Log::class);
         $this->app->alias('bugsnag.multi', \Psr\Log\LoggerInterface::class);
+
+        if ($this->app->isLocal()) {
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**

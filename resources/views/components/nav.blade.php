@@ -6,7 +6,8 @@
     @endif
     <div class="nav_upper_container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse" data-target="#nav-inner">
+            <button type="button" class="navbar-toggle nav nav-collapsed" data-toggle="collapse"
+                    data-target="#nav-inner">
                 <span class="nav-collapsed-icon"></span>
                 <span class="nav-collapsed-icon"></span>
                 <span class="nav-collapsed-icon"></span>
@@ -65,17 +66,18 @@
                                 <li>{!! link_to_route("site.atc.endorsements", "Endorsements") !!}</li>
                                 <li>{!! link_to_route("site.atc.mentor", "Becoming a Mentor") !!}</li>
                                 <li>{!! link_to_route("site.atc.bookings", "Bookings") !!}</li>
+                                @if(currentUserHasAuth())
+                                        <li>{!! link_to_route("ukcp.guide", "UK Controller Plugin") !!}</li>
+                                @endif
                             </ul>
                         </li>
-                        @if(currentUserHasAuth() && Auth::user()->qualificationAtc->isS1)
-                            <li class="col-sm-12">
-                                <ul>
-                                    <li class="divider"></li>
-                                    <li class="dropdown-header">Endorsements</li>
-                                    <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
-                                </ul>
-                            </li>
-                        @endif
+                        <li class="col-sm-12">
+                            <ul>
+                                <li class="divider"></li>
+                                <li class="dropdown-header">Endorsements</li>
+                                <li>{!! link_to_route("controllers.endorsements.gatwick_ground", "Gatwick Ground") !!}</li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 
@@ -156,7 +158,7 @@
                             @endif
                         </a>
                     </li>
-                    @if(Auth::user()->hasPermission('adm/dashboard'))
+                    @if(Auth::user()->can('use-permission', 'adm'))
                         <li class="dropdown dropdown-large">
                             <a href="{{ route("adm.dashboard") }}" title="Admin Dashboard">
                                 <i class="fa fa-dashboard"></i>

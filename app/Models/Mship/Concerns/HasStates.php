@@ -2,6 +2,7 @@
 
 namespace App\Models\Mship\Concerns;
 
+use App\Events\Mship\AccountAltered;
 use App\Exceptions\Mship\InvalidStateException;
 use App\Models\Mship\State;
 use Carbon\Carbon;
@@ -16,7 +17,7 @@ trait HasStates
     public function states()
     {
         return $this->belongsToMany(State::class, 'mship_account_state', 'account_id', 'state_id')
-            ->withPivot(['region', 'division', 'start_at', 'end_at'])
+            ->withPivot(['id', 'region', 'division', 'start_at', 'end_at'])
             ->wherePivot('end_at', null);
     }
 
@@ -116,16 +117,27 @@ trait HasStates
      */
     public function addState(State $state, $region = null, $division = null)
     {
-        if ($this->hasState($state)) {
+        // Cleanup Old States
+        $permanentStates = $this->states->sortByDesc('pivot.start_at')->filter(function ($state) {
+            return $state->isPermanent;
+        });
+        if ($permanentStates->count() > 1) {
+            // They have more than 1 permanent state? Let's set all but the latest to ended...
+            $this->states()->permanent()->wherePivot('id', '!=', $permanentStates->first()->pivot->id)->update(['end_at' => Carbon::now()]);
+        }
+        if ($this->fresh()->hasState($state)) {
+            // Already has same class of state (e.g Intl)
             // Verify the same region/division information, else we want to update the state
-            $exisitingState = $this->states->where('id', $state->id)->first();
+            $exisitingState = $this->fresh()->states->sortByDesc('pivot.start_at')->where('id', $state->id)->first();
             if ($exisitingState->pivot->region == $region && $exisitingState->pivot->division == $division) {
                 return;
             }
         }
 
-        if ($this->primary_state && $this->primary_state->is_permanent && $state->is_permanent) {
-            $this->removeState($this->primary_state);
+        // New state
+        if ($this->primary_permanent_state && $state->is_permanent) {
+            // New state is a permanent one, so lets remove the old permanent state
+            $this->removeState($this->primary_permanent_state);
         }
 
         if ($state->delete_all_temps) {
@@ -141,14 +153,18 @@ trait HasStates
         ]);
 
         $this->touch();
+        event(new AccountAltered($this));
 
         return $state;
     }
 
     public function removeState(State $state)
     {
-        return $this->states()->updateExistingPivot($state->id, [
+        $update = $this->states()->updateExistingPivot($state->id, [
             'end_at' => Carbon::now(),
         ]);
+        event(new AccountAltered($this));
+
+        return $update;
     }
 }

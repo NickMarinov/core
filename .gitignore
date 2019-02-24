@@ -4,13 +4,22 @@
 /storage/*.key
 /vendor
 /.idea
+/.vscode
 /.vagrant
+/laradock
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
 .env
+.env.testing
+.phpunit.result.cache
 
 _ide_helper.php
 .phpstorm.meta.php
 /build
+
+/_nova/*
+/nova/*
+!/nova/composer.json
+!/nova/src/NovaCoreServiceProvider.php

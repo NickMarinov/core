@@ -2,13 +2,18 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Events\Mship\AccountAltered;
+use App\Models\Mship\Account\Email;
+use App\Models\Sso\OAuth\Client;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class EmailAssignmentTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $account;
     private $accountOther;
@@ -113,8 +118,7 @@ class EmailAssignmentTest extends TestCase
         ];
 
         $this->actingAs($this->account->fresh())->get(route('mship.manage.email.delete.post', $account), $data)
-            ->assertViewIs('mship.management.email.delete')
-            ->assertViewHas(['email' => $account->email]);
+            ->assertSee($account->email);
     }
 
     /** @test * */
@@ -123,11 +127,8 @@ class EmailAssignmentTest extends TestCase
         $email = $this->account->fresh()->email;
 
         $this->actingAs($this->account)->get(route('mship.manage.email.assignments'))
-            ->assertViewIs('mship.management.email.assignments')
-            ->assertViewHas([
-                'userPrimaryEmail' => $email,
-                'userSecondaryVerified' => $this->account->verified_secondary_emails,
-            ]);
+            ->assertSee($email)
+            ->assertSee($this->account->verified_secondary_emails);
     }
 
     /** @test * */
@@ -159,14 +160,32 @@ class EmailAssignmentTest extends TestCase
             ->assertSessionHas('success', 'Your new email address ('.$email->email.') has been verified!');
     }
 
-    /** @test * */
-    public function testExistingUnAuthenticatedUserCanVerifyEmailViaGet()
+    /** @test **/
+    public function testItTriggersAnUpdateWhenAssigningSSOEmail()
     {
-        $email = factory(\App\Models\Mship\Account\Email::class)->states('unverified')->create();
+        $sso_client = factory(\Laravel\Passport\Client::class)->create();
+        $email = factory(Email::class)->create(['account_id' => $this->account->id]);
 
-        // ensures request is not sent by an authenticated user.
-        $this->withoutMiddleware()->get(route('mship.manage.email.verify', $email->tokens->first()))
-            ->assertViewIs('mship.management.email.verify')
-            ->assertViewHas('success', 'Your new email address ('.$email->email.') has been verified!');
+        $initialDispatcher = Event::getFacadeRoot();
+        Event::fake();
+        Model::setEventDispatcher($initialDispatcher);
+
+        $this->actingAs($this->account)->post(route('mship.manage.email.assignments.post', ['assign_'.$sso_client->id => $email->id]));
+
+        Event::assertDispatched(AccountAltered::class);
+    }
+
+    /** @test **/
+    public function testItTriggersAnUpdateWhenUnAssigningSSOEmail()
+    {
+        $sso_email = factory(\App\Models\Sso\Email::class)->create();
+
+        $initialDispatcher = Event::getFacadeRoot();
+        Event::fake();
+        Model::setEventDispatcher($initialDispatcher);
+
+        $this->actingAs($this->account)->post(route('mship.manage.email.assignments.post', ['assign_'.$sso_email->ssoAccount->id => 'pri']));
+
+        Event::assertDispatched(AccountAltered::class);
     }
 }

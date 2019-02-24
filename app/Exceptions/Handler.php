@@ -3,17 +3,17 @@
 namespace App\Exceptions;
 
 use App;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Log;
-use Request;
-use Slack;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
+use Vluzrmos\SlackApi\Facades\SlackChat;
 
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that should not be reported.
+     * A list of the exception types that are not reported.
      *
      * @var array
      */
@@ -44,10 +44,10 @@ class Handler extends ExceptionHandler
 
     /**
      * Report or log an exception.
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception $e
+     * @param  \Exception  $e
      * @return void
+     * @throws \Exception $exception
      */
     public function report(Exception $e)
     {
@@ -57,10 +57,6 @@ class Handler extends ExceptionHandler
                     newrelic_notice_error(null, $e);
                 } catch (Exception $e) {
                 }
-            }
-
-            if (class_exists(App::class) && App::isBooted() && App::environment('production')) {
-                $this->reportSlackError($e);
             }
 
             if (class_exists('Log')) {
@@ -85,7 +81,7 @@ class Handler extends ExceptionHandler
 
     protected function reportSlackError(Exception $e)
     {
-        $channel = 'wslogging';
+        $channel = '#ws_alerts';
 
         $attachment = [
             'fallback' => 'Exception thrown: '.get_class($e),
@@ -143,7 +139,7 @@ class Handler extends ExceptionHandler
         }
 
         try {
-            Slack::setUsername('Error Handling')->to($channel)->attach($attachment)->send();
+            SlackChat::message($channel, '', ['attachments' => $attachment, 'username' => 'Error Handling']);
         } catch (Exception $e) {
         }
     }
